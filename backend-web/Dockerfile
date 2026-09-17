@@ -1,12 +1,12 @@
 # Backend-Web 服务 Dockerfile
 # 单阶段构建，直接使用Python源码
 
-# 基础镜像走 docker.io 官方名（由 buildx 的 buildkitd 镜像加速配置拉取，见流水线 BUILDKIT 配置）
-FROM python:3.11-slim
+# 固定使用 Debian Bookworm 避免 Trixie 镜像源问题
+FROM python:3.11-slim-bookworm
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# 配置国内镜像源
+# 配置国内镜像源（Bookworm 用 mirrors.aliyun.com/debian）
 RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || \
     sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list 2>/dev/null || true
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple

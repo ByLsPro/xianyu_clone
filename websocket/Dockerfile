@@ -1,8 +1,8 @@
 # WebSocket 服务 Dockerfile
 # 单阶段构建，直接使用Python源码
 
-# 基础镜像走 docker.io 官方名（由 buildx 的 buildkitd 镜像加速配置拉取，见流水线 BUILDKIT 配置）
-FROM python:3.11-slim
+# 固定使用 Debian Bookworm 避免 Trixie 镜像源问题
+FROM python:3.11-slim-bookworm
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
