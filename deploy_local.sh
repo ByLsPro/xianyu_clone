@@ -117,6 +117,29 @@ mkdir -p \
     "$WORK_DIR/xianyu_auto_reply/browser_data"
 
 # ========== 部署 ==========
+echo -e "${YELLOW}步骤 0/3: 检查 Docker DNS 配置...${NC}"
+NEED_DNS_FIX=0
+if [ -f /etc/docker/daemon.json ]; then
+    if ! grep -q '"dns"' /etc/docker/daemon.json 2>/dev/null; then
+        NEED_DNS_FIX=1
+    fi
+else
+    NEED_DNS_FIX=1
+fi
+if [ "$NEED_DNS_FIX" = "1" ]; then
+    echo -e "${YELLOW}[提示] 配置 Docker DNS（解决构建容器内域名解析失败）...${NC}"
+    mkdir -p /etc/docker
+    if [ -f /etc/docker/daemon.json ]; then
+        cp /etc/docker/daemon.json /etc/docker/daemon.json.bak
+    fi
+    echo '{"dns": ["8.8.8.8", "223.5.5.5", "114.114.114.114"]}' > /etc/docker/daemon.json
+    systemctl restart docker
+    sleep 3
+    echo -e "${GREEN}✓ Docker DNS 已配置${NC}"
+else
+    echo -e "${GREEN}✓ Docker DNS 已配置${NC}"
+fi
+
 echo -e "${YELLOW}步骤 1/3: 从源码构建镜像（首次较慢，请耐心等待）...${NC}"
 $DC_CMD build --no-cache
 echo -e "${GREEN}✓ 镜像构建完成${NC}"
