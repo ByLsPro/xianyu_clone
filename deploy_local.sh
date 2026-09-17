@@ -141,7 +141,7 @@ else
 fi
 
 echo -e "${YELLOW}步骤 1/3: 从源码构建镜像（首次较慢，请耐心等待）...${NC}"
-$DC_CMD build --no-cache
+$DC_CMD build
 echo -e "${GREEN}✓ 镜像构建完成${NC}"
 
 echo ""
